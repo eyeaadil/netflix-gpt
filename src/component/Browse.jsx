@@ -1,26 +1,18 @@
-import React, { useEffect } from 'react'
-import Header from './Header'
-import { API_OPTIONS } from '../utils/constant'
-import { useDispatch } from 'react-redux'
-import { addNowPlayingMovies } from '../utils/moviesSlice'
+// import React, { useEffect } from "react";
+import Header from "./Header";
+import useNowPlayingMovies from "../customHooks/useNowPlayingMovies";
 
 const Browse = () => {
-  const dispatch = useDispatch();
-  const getNowPlayingMovies = async()=>{
-     const data = await fetch('https://api.themoviedb.org/3/movie/now_playing?page=1',API_OPTIONS)
-     const JsonData = await data.json();
-     dispatch(addNowPlayingMovies(JsonData.results));
-  }
 
-  useEffect(()=>{
-    getNowPlayingMovies()
-  },[])
-  return (
-    <div>
-      <Header/>
+  // Here code is looking so ugly so make a custom hook for this
+  // Fetch data from tmdb api and update the store
+  useNowPlayingMovies();
 
-    </div>
-  )
-}
+	return (
+		<div>
+			<Header />
+		</div>
+	);
+};
 
-export default Browse
+export default Browse;
