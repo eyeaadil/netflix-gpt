@@ -1,6 +1,8 @@
 // import React, { useEffect } from "react";
 import Header from "./Header";
 import useNowPlayingMovies from "../customHooks/useNowPlayingMovies";
+import MainContainer from "./MainContainer";
+import SecondryContainer from "./SecondryContainer";
 
 const Browse = () => {
 
@@ -11,6 +13,17 @@ const Browse = () => {
 	return (
 		<div>
 			<Header />
+      <MainContainer/>
+      <SecondryContainer/>
+      {/* 
+      main container
+          -video background
+          -video title
+      secondry Container
+        MovieList * n
+        Movie card * n    
+      
+      */}
 		</div>
 	);
 };
