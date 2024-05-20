@@ -4,10 +4,14 @@ import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
+import { toggleGptSearchView } from "../utils/gptSlice";
+import { SUPPORTED_LANGUAGES } from "../utils/constant";
+import { changeLang } from "../utils/configSlice";
 const Header = () => {
 	const dispatch = useDispatch();
 
 	const user = useSelector((store) => store.user);
+	const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
 	const navigate = useNavigate();
 	const handleSignOut = () => {
 		// const auth = getAuth();
@@ -21,9 +25,8 @@ const Header = () => {
 			});
 	};
 
-	
 	useEffect(() => {
-		const unsubscribe =  onAuthStateChanged(auth, (user) => {
+		const unsubscribe = onAuthStateChanged(auth, (user) => {
 			if (user) {
 				// User is signed in, see docs for a list of available properties
 				// https://firebase.google.com/docs/reference/js/auth.user
@@ -37,7 +40,6 @@ const Header = () => {
 					})
 				);
 				navigate("/browse");
-				
 			} else {
 				// User is signed out
 				dispatch(removeUser());
@@ -46,8 +48,17 @@ const Header = () => {
 		});
 
 		//unsubscribe when component unmounts
-		return ()=> unsubscribe();
+		return () => unsubscribe();
 	}, []);
+
+	const handleGptSearchClick = () => {
+		// toggle GPT search
+		dispatch(toggleGptSearchView());
+	};
+	const handleLanguageChange = (e) => {
+		// console.log(e.target.value)
+		dispatch(changeLang(e.target.value));
+	};
 	return (
 		<div className="absolute  w-screen  px-8 py-2  bg-transparent z-10 flex flex-col md:flex-row justify-between">
 			<img
@@ -58,7 +69,31 @@ const Header = () => {
 
 			{user && (
 				<div className="flex p-2">
-					<img
+					{showGptSearch && (
+						<select
+							className="bg-red-500 p-2 m-2 text-white rounded-lg"
+							onChange={handleLanguageChange}
+						>
+							{SUPPORTED_LANGUAGES.map((lang) => (
+								<option
+									key={lang.identifier}
+									value={lang.identifier}
+									className="bg-white text-black"
+								>
+									{lang.name}
+								</option>
+							))}
+						</select>
+					)}
+
+					<button
+						className="py-2 px-4 bg-purple-800 my-2 mx-4 rounded-lg"
+						onClick={handleGptSearchClick}
+					>
+						{showGptSearch?"HomePage":"GPT Search"}
+
+					</button>
+					<img	
 						src={user?.PhotoURL}
 						alt="UserProfile"
 						className="w-12 h-12 bg-red-600"
